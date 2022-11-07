@@ -4,7 +4,6 @@ import ru.practicum.service.event.category.dto.CategoryDto;
 import ru.practicum.service.event.category.dto.NewCategoryDto;
 import ru.practicum.service.event.category.model.Category;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 public interface CategoryService {

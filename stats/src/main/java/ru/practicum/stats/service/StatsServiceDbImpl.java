@@ -25,7 +25,7 @@ public class StatsServiceDbImpl implements StatsService {
 
     public void addStats(StatsPostRequestDto statsDto) {
         statsDto.setId(null);
-        Stats newStats =  statsRepository.save(StatsMapper.fromStatsPostRequestDto(statsDto));
+        Stats newStats = statsRepository.save(StatsMapper.fromStatsPostRequestDto(statsDto));
         log.info("Добавление информации в БД - {}", newStats);
     }
 

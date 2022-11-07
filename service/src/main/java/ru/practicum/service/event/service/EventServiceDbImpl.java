@@ -33,20 +33,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public class EventServiceDbImpl implements EventService {
 
+    private final Gson gsonForClient;
+    private final UserService userService;
+    private final EventRepository eventRepository;
+    private final CategoryService categoryService;
+    private final LocationRepository locationRepository;
+    private final RequestService requestService;
     @Value("${ewm_stats_url}")
     private String uriServer;
-
-    private final Gson gsonForClient;
-
-    private final UserService userService;
-
-    private final EventRepository eventRepository;
-
-    private final CategoryService categoryService;
-
-    private final LocationRepository locationRepository;
-
-    private final RequestService requestService;
 
     @Autowired
     public EventServiceDbImpl(
@@ -112,7 +106,7 @@ public class EventServiceDbImpl implements EventService {
         List<Event> events = eventRepository.findAllByInitiatorId(
                 userId, PageRequest.of(from / size, size));
         return events.stream().map(event -> EventMapper.toEventShortDto(
-                event, getConfirmedRequests(Math.toIntExact(event.getId())),
+                        event, getConfirmedRequests(Math.toIntExact(event.getId())),
                         getEventViews(Math.toIntExact(event.getId()))))
                 .collect(Collectors.toList());
     }
@@ -130,7 +124,7 @@ public class EventServiceDbImpl implements EventService {
     @Override
     public EventDto addEvent(Integer userId, EventNewDto eventNew) {
         Location location = locationRepository.getByLatAndLon(
-                eventNew.getLocation().getLatitude(), eventNew.getLocation().getLongitude())
+                        eventNew.getLocation().getLatitude(), eventNew.getLocation().getLongitude())
                 .orElseGet(() -> locationRepository.save(LocationMapper.fromLocationDto(eventNew.getLocation())));
         Event event = eventRepository.save(EventMapper.fromEventNewDto(
                 eventNew, userService.getUserById(userId),
@@ -172,7 +166,7 @@ public class EventServiceDbImpl implements EventService {
                 rangeStart, rangeEnd, PageRequest.of(from / size, size));
 
         return events.stream().map(event -> EventMapper.toEventDto(
-                event, getConfirmedRequests(Math.toIntExact(event.getId())),
+                        event, getConfirmedRequests(Math.toIntExact(event.getId())),
                         getEventListViews()))
                 .collect(Collectors.toList());
     }
@@ -316,7 +310,7 @@ public class EventServiceDbImpl implements EventService {
 
         if (eventUpdate.getLocation() != null) {
             Location location = locationRepository.getByLatAndLon(
-                    eventUpdate.getLocation().getLatitude(), eventUpdate.getLocation().getLongitude())
+                            eventUpdate.getLocation().getLatitude(), eventUpdate.getLocation().getLongitude())
                     .orElseGet(() -> locationRepository.save(
                             LocationMapper.fromLocationDto(eventUpdate.getLocation())));
             event.setLocation(location);

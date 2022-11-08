@@ -323,7 +323,7 @@ public class EventServiceDbImpl implements EventService {
 
     protected void sendStatistics(String ip, String uri) {
         StatsPostRequestDto statsDto = new StatsPostRequestDto(
-                null, "ewm-service", uri, ip, LocalDateTime.now());
+                null, "service", uri, ip, LocalDateTime.now());
         StatsClient.sendStatistics(uriServer, gsonForClient.toJson(statsDto));
     }
 

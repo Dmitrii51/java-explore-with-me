@@ -10,8 +10,8 @@ services:
       - db_stats
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db_stats:5432/stats
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
   db_stats:
     image: postgres:11-alpine
@@ -22,8 +22,8 @@ services:
       - /var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=stats
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
   service:
     build: ./service
@@ -36,8 +36,8 @@ services:
     environment:
       - ewm_stats_url=http://stats:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db_service:5432/explorewithme
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
   db_service:
     image: postgres:11-alpine
@@ -48,5 +48,5 @@ services:
       - /var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=explorewithme
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root

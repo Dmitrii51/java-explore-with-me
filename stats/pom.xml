@@ -2,19 +2,18 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>explore-with-me</artifactId>
-        <groupId>ru.practicum</groupId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>stats</artifactId>
+    <parent>
+        <groupId>ru.practicum</groupId>
+        <artifactId>ewm</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
+    <artifactId>ewm-stats</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <name>EWM Stats</name>
 
     <dependencies>
         <dependency>
@@ -70,7 +69,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>
-                        ru.practicum.stats.StatsApp
+                        ru.practicum.ewm.StatsApp
                     </mainClass>
                 </configuration>
                 <executions>

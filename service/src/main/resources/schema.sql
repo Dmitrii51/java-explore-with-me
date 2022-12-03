@@ -3,7 +3,8 @@ create TABLE IF NOT EXISTS users (
     name varchar NOT NULL,
     email varchar NOT NULL,
     CONSTRAINT pk_user PRIMARY KEY (user_id),
-    CONSTRAINT unique_user_email UNIQUE (email)
+    CONSTRAINT unique_user_email UNIQUE (email),
+    CONSTRAINT unique_user_name UNIQUE (name)
 );
 
 create TABLE IF NOT EXISTS categories (

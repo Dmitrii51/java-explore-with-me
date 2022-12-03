@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.ResourceNotFoundException;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.dto.UserMapper;
@@ -11,6 +12,7 @@ import ru.practicum.ewm.user.dto.UserNewDto;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,9 +32,13 @@ public class UserServiceDbImpl implements UserService {
 
     @Override
     public UserDto addUser(UserNewDto userNewDto) {
-        User newUser = userRepository.save(UserMapper.fromUserNewDto(userNewDto));
-        log.info("Добавление нового пользователя c id {}", newUser.getId());
-        return UserMapper.toUserDto(newUser);
+        try {
+            User newUser = userRepository.save(UserMapper.fromUserNewDto(userNewDto));
+            log.info("Добавление нового пользователя c id {}", newUser.getId());
+            return UserMapper.toUserDto(newUser);
+        } catch (ConstraintViolationException e) {
+            throw new ConflictException("Имя пользователя и почтовый адрес должны быть уникальными");
+        }
     }
 
     @Override

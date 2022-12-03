@@ -2,6 +2,7 @@ package ru.practicum.ewm.event.category.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.event.category.dto.CategoryDto;
@@ -9,6 +10,7 @@ import ru.practicum.ewm.event.category.dto.CategoryMapper;
 import ru.practicum.ewm.event.category.dto.NewCategoryDto;
 import ru.practicum.ewm.event.category.model.Category;
 import ru.practicum.ewm.event.category.repository.CategoryRepository;
+import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.ResourceNotFoundException;
 
 import java.util.List;
@@ -48,17 +50,25 @@ public class CategoryServiceDbImpl implements CategoryService {
 
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto) {
-        getCategoryById(categoryDto.getId());
-        Category category = categoryRepository.save(CategoryMapper.fromCategoryDto(categoryDto));
-        log.info("Изменение информации о категории с id {}", category.getId());
-        return CategoryMapper.toCategoryDto(category);
+        try {
+            getCategoryById(categoryDto.getId());
+            Category category = categoryRepository.save(CategoryMapper.fromCategoryDto(categoryDto));
+            log.info("Изменение информации о категории с id {}", category.getId());
+            return CategoryMapper.toCategoryDto(category);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConflictException("Название категории должно быть уникальными");
+        }
     }
 
     @Override
     public CategoryDto addCategory(NewCategoryDto newCategoryDto) {
-        Category newCategory = categoryRepository.save(CategoryMapper.fromNewCategoryDto(newCategoryDto));
-        log.info("Добавление новой категории c id {}", newCategory.getId());
-        return CategoryMapper.toCategoryDto(newCategory);
+        try {
+            Category newCategory = categoryRepository.save(CategoryMapper.fromNewCategoryDto(newCategoryDto));
+            log.info("Добавление новой категории c id {}", newCategory.getId());
+            return CategoryMapper.toCategoryDto(newCategory);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConflictException("Название категории должно быть уникальными");
+        }
     }
 
     @Override

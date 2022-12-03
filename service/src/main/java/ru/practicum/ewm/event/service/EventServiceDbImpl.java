@@ -110,7 +110,7 @@ public class EventServiceDbImpl implements EventService {
                 userId, PageRequest.of(from / size, size));
         return events.stream().map(event -> EventMapper.toEventShortDto(
                         event, getConfirmedRequests(Math.toIntExact(event.getId())),
-                        getEventViews(Math.toIntExact(event.getId()))))
+                        getEventViews(event.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -175,7 +175,7 @@ public class EventServiceDbImpl implements EventService {
     public EventDto addEvent(Integer userId, EventNewDto eventNew) {
         validateEventDate(eventNew.getEventDate());
         Location location = locationRepository.getByLatitudeAndLongitude(
-                        eventNew.getLocation().getLatitude(), eventNew.getLocation().getLongitude())
+                        eventNew.getLocation().getLat(), eventNew.getLocation().getLon())
                 .orElseGet(() -> locationRepository.save(LocationMapper.fromLocationDto(eventNew.getLocation())));
         Event event = eventRepository.save(EventMapper.fromEventNewDto(
                 eventNew, userService.getUserById(userId),
@@ -263,7 +263,7 @@ public class EventServiceDbImpl implements EventService {
 
         if (eventUpdate.getLocation() != null) {
             Location location = locationRepository.getByLatitudeAndLongitude(
-                            eventUpdate.getLocation().getLatitude(), eventUpdate.getLocation().getLongitude())
+                            eventUpdate.getLocation().getLat(), eventUpdate.getLocation().getLon())
                     .orElseGet(() -> locationRepository.save(
                             LocationMapper.fromLocationDto(eventUpdate.getLocation())));
             event.setLocation(location);

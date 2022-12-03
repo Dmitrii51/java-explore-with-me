@@ -7,8 +7,8 @@ public class LocationMapper {
     public static Location fromLocationDto(LocationDto locationDto) {
         return new Location(
                 null,
-                locationDto.getLatitude(),
-                locationDto.getLongitude());
+                locationDto.getLat(),
+                locationDto.getLon());
     }
 
     public static LocationDto toLocationDto(Location location) {

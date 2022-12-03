@@ -38,7 +38,7 @@ public class EventController {
             @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
             @RequestParam(name = "sort") @NotNull SortOption sort,
             @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
-            @RequestParam(required = false, defaultValue = "10") @NotNull @Min(0) Integer size,
+            @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size,
             HttpServletRequest request) {
         return eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable,
                 sort, from, size, request.getRemoteAddr(), request.getRequestURI());
@@ -46,7 +46,7 @@ public class EventController {
 
     @GetMapping("/events/{id}")
     EventDto getEventById(
-            @PathVariable(name = "id") @Min(0) Integer eventId,
+            @PathVariable(name = "id") @Min(1) Integer eventId,
             HttpServletRequest request) {
         return eventService.getEventById(eventId, request.getRemoteAddr(), request.getRequestURI());
     }
@@ -55,35 +55,35 @@ public class EventController {
     List<EventShortDto> getUserEvents(
             @PathVariable @Min(0) Integer userId,
             @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
-            @RequestParam(required = false, defaultValue = "0") @Min(0) Integer size) {
+            @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         return eventService.getUserEvents(userId, from, size);
     }
 
     @PatchMapping("/users/{userId}/events")
     EventDto updateEvent(
             @RequestBody @Valid EventUpdateDto eventUpdate,
-            @PathVariable @Min(0) Integer userId) {
+            @PathVariable @Min(1) Integer userId) {
         return eventService.updateEvent(userId, eventUpdate);
     }
 
     @PostMapping("/users/{userId}/events")
     EventDto addEvent(
             @RequestBody @Valid EventNewDto eventNew,
-            @PathVariable @Min(0) Integer userId) {
+            @PathVariable @Min(1) Integer userId) {
         return eventService.addEvent(userId, eventNew);
     }
 
     @GetMapping("/users/{userId}/events/{eventId}")
     EventDto getUserEvent(
-            @PathVariable @Min(0) Integer userId,
-            @PathVariable @Min(0) Integer eventId) {
+            @PathVariable @Min(1) Integer userId,
+            @PathVariable @Min(1) Integer eventId) {
         return eventService.getUserEvent(userId, eventId);
     }
 
     @PatchMapping("/users/{userId}/events/{eventId}")
     EventDto cancelEvent(
-            @PathVariable @Min(0) Integer userId,
-            @PathVariable @Min(0) Integer eventId) {
+            @PathVariable @Min(1) Integer userId,
+            @PathVariable @Min(1) Integer eventId) {
         return eventService.cancelEvent(userId, eventId);
     }
 }

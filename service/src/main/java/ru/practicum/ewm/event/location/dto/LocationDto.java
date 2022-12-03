@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 
 @Data
 @AllArgsConstructor
@@ -13,11 +14,13 @@ import javax.validation.constraints.PositiveOrZero;
 public class LocationDto {
 
     @NotNull
-    @PositiveOrZero
-    private Float latitude;
+    @Min(-90)
+    @Max(90)
+    private Float lat;
 
     @NotNull
-    @PositiveOrZero
-    private Float longitude;
+    @Min(-180)
+    @Max(180)
+    private Float lon;
 }
 

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.event.category.dto.CategoryDto;
 import ru.practicum.ewm.event.category.service.CategoryService;
 import ru.practicum.ewm.event.dto.EventDto;
 import ru.practicum.ewm.event.dto.EventNewDto;
@@ -50,19 +49,6 @@ public class EventController {
             @PathVariable(name = "id") @Min(0) Integer eventId,
             HttpServletRequest request) {
         return eventService.getEventById(eventId, request.getRemoteAddr(), request.getRequestURI());
-    }
-
-    @GetMapping("/categories")
-    List<CategoryDto> getCategories(
-            @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
-            @RequestParam(required = false, defaultValue = "10") @Min(0) Integer size) {
-        return categoryService.getCategoriesList(from, size);
-    }
-
-    @GetMapping("/categories/{catId}")
-    CategoryDto getCategory(
-            @PathVariable @Min(0) Integer catId) {
-        return categoryService.getCategory(catId);
     }
 
     @GetMapping("/users/{userId}/events")

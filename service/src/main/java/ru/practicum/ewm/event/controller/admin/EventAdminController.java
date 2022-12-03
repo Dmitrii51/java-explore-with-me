@@ -4,15 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.event.category.dto.CategoryDto;
-import ru.practicum.ewm.event.category.dto.NewCategoryDto;
 import ru.practicum.ewm.event.category.service.CategoryService;
 import ru.practicum.ewm.event.dto.EventDto;
 import ru.practicum.ewm.event.dto.EventUpdateAdminDto;
 import ru.practicum.ewm.event.model.EventState;
 import ru.practicum.ewm.event.service.EventService;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,20 +50,5 @@ public class EventAdminController {
     @PatchMapping("/events/{eventId}/reject")
     EventDto cancelEventByAdmin(@PathVariable @Min(0) Integer eventId) {
         return eventService.cancelEventByAdmin(eventId);
-    }
-
-    @PatchMapping("/categories")
-    CategoryDto updateCategory(@RequestBody @Valid CategoryDto categoryDto) {
-        return categoryService.updateCategory(categoryDto);
-    }
-
-    @PostMapping("/categories")
-    CategoryDto addCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {
-        return categoryService.addCategory(newCategoryDto);
-    }
-
-    @DeleteMapping("/categories/{catId}")
-    void deleteCategory(@PathVariable @Min(0) Integer catId) {
-        categoryService.deleteCategory(catId);
     }
 }

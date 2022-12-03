@@ -1,4 +1,4 @@
-package ru.practicum.ewm.client;
+package ru.practicum.ewm.stats;
 
 
 import com.google.gson.Gson;
@@ -6,8 +6,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.practicum.ewm.dto.StatsGetRequestDto;
 import ru.practicum.ewm.exception.RemoteServerException;
+import ru.practicum.ewm.stats.dto.StatsGetRequestDto;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -36,7 +36,7 @@ public class StatsClient {
         }
     }
 
-    public static Integer getViews(String uriServer, List<String> uris, Boolean unique) {
+    public static Long getViews(String uriServer, List<String> uris, Boolean unique) {
         java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder().build();
         Gson gson = new GsonBuilder().create();
 
@@ -47,7 +47,7 @@ public class StatsClient {
                 .GET()
                 .uri(uri)
                 .build();
-        String result = "";
+        String result;
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

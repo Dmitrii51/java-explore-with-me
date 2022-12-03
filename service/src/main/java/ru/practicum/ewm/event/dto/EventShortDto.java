@@ -49,5 +49,5 @@ public class EventShortDto {
 
     @NotNull
     @Min(0)
-    private Integer views;
+    private Long views;
 }

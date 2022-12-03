@@ -1,28 +1,23 @@
-package ru.practicum.ewm.model;
+package ru.practicum.ewm.stats.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Entity
-@Table(name = "stats")
-public class Stats {
+public class StatsPostRequestDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String app;
-    private String uri;
-    private String ip;
-    private LocalDateTime timestamp;
 
-    @Transient
-    private long hits;
+    private String uri;
+
+    private String ip;
+
+    private LocalDateTime timestamp;
 }

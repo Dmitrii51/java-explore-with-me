@@ -24,6 +24,10 @@ public class Compilation {
 
     private String title;
 
-    @OneToMany(mappedBy = "compilations", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany
+    @JoinTable(
+            name = "events_compilations",
+            joinColumns = @JoinColumn(name = "compilation_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Event> events;
 }

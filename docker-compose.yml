@@ -9,9 +9,11 @@ services:
     depends_on:
       - db_stats
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_stats:5432/stats
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - DB_NAME=stats
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db_stats
+      - DB_PORT=5432
 
   db_stats:
     image: postgres:11-alpine
@@ -22,22 +24,24 @@ services:
       - /var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=stats
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
   service:
     build: ./service
-    container_name: explore_with_me
+    container_name: service_ewm
     ports:
       - "8080:8080"
     depends_on:
       - db_service
       - stats
     environment:
-      - ewm_stats_url=http://stats:9090
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_service:5432/explorewithme
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - DB_NAME=service
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db_service
+      - DB_PORT=5432
+      - EWM_STATISTIC_URL=http://stats:9090
 
   db_service:
     image: postgres:11-alpine
@@ -47,6 +51,6 @@ services:
     volumes:
       - /var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=explorewithme
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=service
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root

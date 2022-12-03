@@ -40,5 +40,5 @@ public interface EventService {
 
     Event getEventById(Integer eventId);
 
-    Integer getEventListViews();
+    Long getEventListViews();
 }

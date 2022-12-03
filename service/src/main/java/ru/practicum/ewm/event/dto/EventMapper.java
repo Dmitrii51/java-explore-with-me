@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 public class EventMapper {
 
-    public static EventDto toEventDto(Event event, Integer confirmedRequests, Integer views) {
+    public static EventDto toEventDto(Event event, Integer confirmedRequests, Long views) {
         return new EventDto(
                 event.getAnnotation(),
                 CategoryMapper.toCategoryDto(event.getCategory()),
@@ -33,7 +33,7 @@ public class EventMapper {
                 views);
     }
 
-    public static EventShortDto toEventShortDto(Event event, Integer confirmedRequests, Integer views) {
+    public static EventShortDto toEventShortDto(Event event, Integer confirmedRequests, Long views) {
         return new EventShortDto(
                 event.getAnnotation(),
                 CategoryMapper.toCategoryDto(event.getCategory()),

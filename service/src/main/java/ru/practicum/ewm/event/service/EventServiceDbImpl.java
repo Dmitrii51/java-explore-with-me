@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import ru.practicum.ewm.client.StatsClient;
-import ru.practicum.ewm.dto.StatsPostRequestDto;
+import org.springframework.stereotype.Service;
 import ru.practicum.ewm.event.category.service.CategoryService;
 import ru.practicum.ewm.event.controller.client.SortOption;
 import ru.practicum.ewm.event.dto.*;
@@ -21,6 +21,8 @@ import ru.practicum.ewm.exception.ForbiddenException;
 import ru.practicum.ewm.exception.ResourceNotFoundException;
 import ru.practicum.ewm.exception.ValidationException;
 import ru.practicum.ewm.request.service.RequestService;
+import ru.practicum.ewm.stats.StatsClient;
+import ru.practicum.ewm.stats.dto.StatsPostRequestDto;
 import ru.practicum.ewm.user.service.UserService;
 
 import java.time.LocalDateTime;
@@ -29,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 @Slf4j
 public class EventServiceDbImpl implements EventService {
 
@@ -38,13 +41,13 @@ public class EventServiceDbImpl implements EventService {
     private final CategoryService categoryService;
     private final LocationRepository locationRepository;
     private final RequestService requestService;
-    @Value("${ewm_stats_url}")
+    @Value("${EWM_STATS_URL}")
     private String uriServer;
 
     @Autowired
     public EventServiceDbImpl(
             UserService userService, EventRepository eventRepository, CategoryService categoryService,
-            LocationRepository locationRepository, RequestService requestService) {
+            LocationRepository locationRepository, @Lazy RequestService requestService) {
         this.userService = userService;
         this.eventRepository = eventRepository;
         this.categoryService = categoryService;
@@ -178,7 +181,7 @@ public class EventServiceDbImpl implements EventService {
                 eventNew, userService.getUserById(userId),
                 categoryService.getCategoryById(eventNew.getCategory()), location));
         log.info("Добавление нового события c id {}", event.getId());
-        return EventMapper.toEventDto(event, 0, 0);
+        return EventMapper.toEventDto(event, 0, 0L);
     }
 
     @Override
@@ -339,11 +342,11 @@ public class EventServiceDbImpl implements EventService {
         StatsClient.sendStatistics(uriServer, gsonForClient.toJson(statsDto));
     }
 
-    private Integer getEventViews(Integer eventId) {
+    private Long getEventViews(Integer eventId) {
         return StatsClient.getViews(uriServer, List.of("/events/" + eventId), false);
     }
 
-    public Integer getEventListViews() {
+    public Long getEventListViews() {
         return StatsClient.getViews(uriServer, List.of("/events"), false);
     }
 }

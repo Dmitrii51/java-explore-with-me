@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class StatsPostRequestDto {
 
-    private Long id;
+    private Integer id;
 
     @NotBlank
     @NotEmpty

@@ -41,7 +41,7 @@ services:
       - POSTGRES_PASSWORD=root
       - DB_HOST=db_service
       - DB_PORT=5432
-      - EWM_STATISTIC_URL=http://stats:9090
+      - EWM_STATS_URL=http://stats:9090
 
   db_service:
     image: postgres:11-alpine

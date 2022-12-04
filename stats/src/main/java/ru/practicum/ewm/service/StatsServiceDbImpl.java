@@ -28,7 +28,6 @@ public class StatsServiceDbImpl implements StatsService {
     public List<StatsGetRequestDto> getStats(
             LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         List<StatsGetRequestDto> stats;
-
         if (start == null) {
             start = LocalDateTime.now().minusDays(100);
         }

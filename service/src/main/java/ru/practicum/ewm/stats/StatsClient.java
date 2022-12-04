@@ -30,7 +30,6 @@ public class StatsClient {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            log.info("HttpClient sendStatistic: {}", response);
         } catch (IOException | InterruptedException e) {
             throw new RemoteServerException("Сервер статистики не отвечает");
         }
@@ -39,7 +38,6 @@ public class StatsClient {
     public static Long getViews(String uriServer, List<String> uris, Boolean unique) {
         java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder().build();
         Gson gson = new GsonBuilder().create();
-
         URI uri = URI.create(uriServer + "/stats?" +
                 "uris=" + uris.toString().substring(1, uris.toString().length() - 1) +
                 "&unique=" + unique);
@@ -48,7 +46,6 @@ public class StatsClient {
                 .uri(uri)
                 .build();
         String result;
-
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             result = response.body();
@@ -58,6 +55,10 @@ public class StatsClient {
         Type statisticDtoType = new TypeToken<List<StatsGetRequestDto>>() {
         }.getType();
         List<StatsGetRequestDto> statistic = gson.fromJson(result, statisticDtoType);
-        return statistic.get(0).getHits();
+        long hits = 0;
+        if (statistic != null && statistic.size() > 0) {
+            hits =  statistic.get(0).getHits();
+        }
+        return hits;
     }
 }

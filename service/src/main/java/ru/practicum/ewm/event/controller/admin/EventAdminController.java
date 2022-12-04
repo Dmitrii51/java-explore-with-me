@@ -30,8 +30,8 @@ public class EventAdminController {
             @RequestParam(required = false, name = "categories") List<Integer> categoryIds,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-            @RequestParam(required = false, defaultValue = "0") Integer from,
-            @RequestParam(required = false, defaultValue = "10") Integer size) {
+            @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         return eventService.getEventsByAdmin(userIds, states, categoryIds, rangeStart, rangeEnd, from, size);
     }
 

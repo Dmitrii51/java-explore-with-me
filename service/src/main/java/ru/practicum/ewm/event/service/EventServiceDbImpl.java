@@ -26,6 +26,7 @@ import ru.practicum.ewm.stats.dto.StatsPostRequestDto;
 import ru.practicum.ewm.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,8 @@ public class EventServiceDbImpl implements EventService {
     private final RequestService requestService;
     @Value("${EWM_STATS_URL}")
     private String uriServer;
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public EventServiceDbImpl(
@@ -338,7 +341,7 @@ public class EventServiceDbImpl implements EventService {
 
     private void sendStatistics(String ip, String uri) {
         StatsPostRequestDto statsDto = new StatsPostRequestDto(
-                null, "service", uri, ip, LocalDateTime.now());
+                null, "service", uri, ip, LocalDateTime.now().format(DATE_TIME_FORMATTER));
         StatsClient.sendStatistics(uriServer, gsonForClient.toJson(statsDto));
     }
 

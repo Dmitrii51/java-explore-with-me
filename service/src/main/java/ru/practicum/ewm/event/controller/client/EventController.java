@@ -36,7 +36,7 @@ public class EventController {
             @RequestParam(required = false)
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
             @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
-            @RequestParam(name = "sort") @NotNull SortOption sort,
+            @RequestParam(required = false, defaultValue = "EVENT_DATE") SortOption sort,
             @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
             @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size,
             HttpServletRequest request) {
@@ -46,7 +46,7 @@ public class EventController {
 
     @GetMapping("/events/{id}")
     EventDto getEventById(
-            @PathVariable(name = "id") @Min(1) Integer eventId,
+            @PathVariable(name = "id") @Min(0) Integer eventId,
             HttpServletRequest request) {
         return eventService.getEventById(eventId, request.getRemoteAddr(), request.getRequestURI());
     }
@@ -62,21 +62,21 @@ public class EventController {
     @PatchMapping("/users/{userId}/events")
     EventDto updateEvent(
             @RequestBody @Valid EventUpdateDto eventUpdate,
-            @PathVariable @Min(1) Integer userId) {
+            @PathVariable @Min(0) Integer userId) {
         return eventService.updateEvent(userId, eventUpdate);
     }
 
     @PostMapping("/users/{userId}/events")
     EventDto addEvent(
             @RequestBody @Valid EventNewDto eventNew,
-            @PathVariable @Min(1) Integer userId) {
+            @PathVariable @Min(0) Integer userId) {
         return eventService.addEvent(userId, eventNew);
     }
 
     @GetMapping("/users/{userId}/events/{eventId}")
     EventDto getUserEvent(
-            @PathVariable @Min(1) Integer userId,
-            @PathVariable @Min(1) Integer eventId) {
+            @PathVariable @Min(0) Integer userId,
+            @PathVariable @Min(0) Integer eventId) {
         return eventService.getUserEvent(userId, eventId);
     }
 

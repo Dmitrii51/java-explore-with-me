@@ -19,5 +19,5 @@ public class StatsPostRequestDto {
 
     private String ip;
 
-    private LocalDateTime timestamp;
+    private String timestamp;
 }

@@ -57,7 +57,7 @@ public class StatsClient {
         List<StatsGetRequestDto> statistic = gson.fromJson(result, statisticDtoType);
         long hits = 0;
         if (statistic != null && statistic.size() > 0) {
-            hits =  statistic.get(0).getHits();
+            hits = statistic.get(0).getHits();
         }
         return hits;
     }

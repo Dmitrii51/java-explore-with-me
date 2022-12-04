@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class EventServiceDbImpl implements EventService {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final Gson gsonForClient;
     private final UserService userService;
     private final EventRepository eventRepository;
@@ -44,8 +45,6 @@ public class EventServiceDbImpl implements EventService {
     private final RequestService requestService;
     @Value("${EWM_STATS_URL}")
     private String uriServer;
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public EventServiceDbImpl(

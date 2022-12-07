@@ -1,6 +1,6 @@
 package ru.practicum.ewm.event.repository;
 
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
 
-    List<Event> findAllByInitiatorId(Integer initiatorId, PageRequest limit);
+    List<Event> findAllByInitiatorId(Integer initiatorId, Pageable page);
 
     @Query(value = "SELECT e FROM Event e " +
             "WHERE (COALESCE(:userIds, null) IS NULL OR e.initiator.id IN :userIds) " +
@@ -23,7 +23,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             @Param("userIds") List<Integer> userIds, @Param("states") List<EventState> states,
             @Param("categoryIds") List<Integer> categoryIds,
             @Param("rangeStart") LocalDateTime rangeStart,
-            @Param("rangeEnd") LocalDateTime rangeEnd, PageRequest limit);
+            @Param("rangeEnd") LocalDateTime rangeEnd, Pageable page);
 
 
     @Query(value = "SELECT e FROM Event e " +
@@ -36,5 +36,5 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> getPublishedEvents(
             @Param("text") String text, @Param("categories") List<Integer> categories,
             @Param("paid") Boolean paid, @Param("rangeStart") LocalDateTime rangeStart,
-            @Param("rangeEnd") LocalDateTime rangeEnd, PageRequest limit);
+            @Param("rangeEnd") LocalDateTime rangeEnd, Pageable page);
 }

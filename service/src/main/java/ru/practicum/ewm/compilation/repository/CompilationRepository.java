@@ -1,6 +1,6 @@
 package ru.practicum.ewm.compilation.repository;
 
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,5 +17,5 @@ public interface CompilationRepository extends JpaRepository<Compilation, Intege
             "WHERE c.id = ?1")
     int pinUnpinCompilation(Integer compilationId, Boolean pinned);
 
-    List<Compilation> findAllByPinned(boolean pinned, PageRequest limit);
+    List<Compilation> findAllByPinned(boolean pinned, Pageable page);
 }

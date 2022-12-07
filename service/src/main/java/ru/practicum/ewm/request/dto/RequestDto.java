@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.request.model.RequestStatus;
+import ru.practicum.ewm.util.Constants;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +18,7 @@ public class RequestDto {
 
     private Integer event;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = Constants.DATE_TIME_PATTERN)
     private LocalDateTime created;
 
     private Integer requester;

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.event.category.dto.CategoryDto;
 import ru.practicum.ewm.user.dto.UserShortDto;
+import ru.practicum.ewm.util.Constants;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -30,7 +31,7 @@ public class EventShortDto {
     private Integer confirmedRequests;
 
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = Constants.DATE_TIME_PATTERN)
     private LocalDateTime eventDate;
 
     @NotNull

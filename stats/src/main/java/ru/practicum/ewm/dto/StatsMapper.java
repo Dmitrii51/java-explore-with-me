@@ -1,10 +1,12 @@
 package ru.practicum.ewm.dto;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.model.Stats;
 
+@UtilityClass
 public class StatsMapper {
 
-    public static Stats fromStatsPostRequestDto(StatsPostRequestDto statsDto) {
+    public Stats fromStatsPostRequestDto(StatsPostRequestDto statsDto) {
         return new Stats(
                 statsDto.getId(),
                 statsDto.getApp(),
@@ -15,7 +17,7 @@ public class StatsMapper {
         );
     }
 
-    public static StatsGetRequestDto toStatsGetRequestDto(Stats stats) {
+    public StatsGetRequestDto toStatsGetRequestDto(Stats stats) {
         return new StatsGetRequestDto(
                 stats.getApp(),
                 stats.getUri(),

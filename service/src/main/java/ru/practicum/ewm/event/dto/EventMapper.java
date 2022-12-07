@@ -1,5 +1,6 @@
 package ru.practicum.ewm.event.dto;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.event.category.dto.CategoryMapper;
 import ru.practicum.ewm.event.category.model.Category;
 import ru.practicum.ewm.event.location.dto.LocationMapper;
@@ -11,9 +12,10 @@ import ru.practicum.ewm.user.model.User;
 
 import java.time.LocalDateTime;
 
+@UtilityClass
 public class EventMapper {
 
-    public static EventDto toEventDto(Event event, Integer confirmedRequests, Long views) {
+    public EventDto toEventDto(Event event, Integer confirmedRequests, Long views) {
         return new EventDto(
                 event.getAnnotation(),
                 CategoryMapper.toCategoryDto(event.getCategory()),
@@ -33,7 +35,7 @@ public class EventMapper {
                 views);
     }
 
-    public static EventShortDto toEventShortDto(Event event, Integer confirmedRequests, Long views) {
+    public EventShortDto toEventShortDto(Event event, Integer confirmedRequests, Long views) {
         return new EventShortDto(
                 event.getAnnotation(),
                 CategoryMapper.toCategoryDto(event.getCategory()),
@@ -46,7 +48,7 @@ public class EventMapper {
                 views);
     }
 
-    public static Event fromEventNewDto(EventNewDto eventNew, User initiator, Category category, Location location) {
+    public Event fromEventNewDto(EventNewDto eventNew, User initiator, Category category, Location location) {
         return new Event(
                 null,
                 eventNew.getAnnotation(),

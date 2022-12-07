@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.event.category.service.CategoryService;
@@ -24,9 +24,10 @@ import ru.practicum.ewm.request.service.RequestService;
 import ru.practicum.ewm.stats.StatsClient;
 import ru.practicum.ewm.stats.dto.StatsPostRequestDto;
 import ru.practicum.ewm.user.service.UserService;
+import ru.practicum.ewm.util.Constants;
+import ru.practicum.ewm.util.PageBuilder;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class EventServiceDbImpl implements EventService {
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final Gson gsonForClient;
     private final UserService userService;
     private final EventRepository eventRepository;
@@ -73,10 +73,11 @@ public class EventServiceDbImpl implements EventService {
             rangeEnd = LocalDateTime.now().plusYears(10);
         }
 
+        Pageable page = PageBuilder.getPage(from, size, "eventDate", Sort.Direction.ASC);
+
         List<Event> events = eventRepository.getPublishedEvents(
                 text != null ? text.toLowerCase() : null,
-                categories, paid, rangeStart, rangeEnd,
-                PageRequest.of(from / size, size, Sort.Direction.ASC, "eventDate"));
+                categories, paid, rangeStart, rangeEnd, page);
 
         List<EventShortDto> eventsDto = events.stream()
                 .map(event -> EventMapper.toEventShortDto(
@@ -108,8 +109,8 @@ public class EventServiceDbImpl implements EventService {
 
     @Override
     public List<EventShortDto> getUserEvents(Integer userId, Integer from, Integer size) {
-        List<Event> events = eventRepository.findAllByInitiatorId(
-                userId, PageRequest.of(from / size, size));
+        Pageable page = PageBuilder.getPage(from, size, "id", Sort.Direction.ASC);
+        List<Event> events = eventRepository.findAllByInitiatorId(userId, page);
         return events.stream().map(event -> EventMapper.toEventShortDto(
                         event, getConfirmedRequests(Math.toIntExact(event.getId())),
                         getEventViews(event.getId())))
@@ -229,9 +230,11 @@ public class EventServiceDbImpl implements EventService {
             rangeEnd = LocalDateTime.now().plusYears(10);
         }
 
+        Pageable page = PageBuilder.getPage(from, size, "id", Sort.Direction.ASC);
+
         List<Event> events = eventRepository.getEventsByAdmin(
                 userIds, states, categoryIds,
-                rangeStart, rangeEnd, PageRequest.of(from / size, size));
+                rangeStart, rangeEnd, page);
 
         return events.stream()
                 .map(event -> EventMapper.toEventDto(
@@ -340,7 +343,7 @@ public class EventServiceDbImpl implements EventService {
 
     private void sendStatistics(String ip, String uri) {
         StatsPostRequestDto statsDto = new StatsPostRequestDto(
-                null, "service", uri, ip, LocalDateTime.now().format(DATE_TIME_FORMATTER));
+                null, "service", uri, ip, LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER));
         StatsClient.sendStatistics(uriServer, gsonForClient.toJson(statsDto));
     }
 

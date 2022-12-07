@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.ewm.util.Constants;
 
 import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public class EventUpdateDto {
 
     private String description;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = Constants.DATE_TIME_PATTERN)
     private LocalDateTime eventDate;
 
     private Boolean paid;

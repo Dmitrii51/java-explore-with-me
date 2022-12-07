@@ -3,7 +3,8 @@ package ru.practicum.ewm.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.ResourceNotFoundException;
@@ -12,6 +13,7 @@ import ru.practicum.ewm.user.dto.UserMapper;
 import ru.practicum.ewm.user.dto.UserNewDto;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
+import ru.practicum.ewm.util.PageBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +27,9 @@ public class UserServiceDbImpl implements UserService {
 
     @Override
     public List<UserDto> getUsersList(List<Integer> ids, Integer from, Integer size) {
+        Pageable page = PageBuilder.getPage(from, size, "id", Sort.Direction.ASC);
         List<User> users = (ids != null) ? userRepository.findAllById(ids)
-                : userRepository.findAll(PageRequest.of(from / size, size)).toList();
+                : userRepository.findAll(page).toList();
         return users.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 

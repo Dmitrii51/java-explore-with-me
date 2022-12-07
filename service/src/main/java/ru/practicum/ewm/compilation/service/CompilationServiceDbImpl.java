@@ -2,7 +2,8 @@ package ru.practicum.ewm.compilation.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.compilation.dto.CompilationDto;
 import ru.practicum.ewm.compilation.dto.CompilationMapper;
@@ -16,6 +17,7 @@ import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.event.service.EventService;
 import ru.practicum.ewm.exception.ResourceNotFoundException;
 import ru.practicum.ewm.request.service.RequestService;
+import ru.practicum.ewm.util.PageBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,9 +34,10 @@ public class CompilationServiceDbImpl implements CompilationService {
 
     @Override
     public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
+        Pageable page = PageBuilder.getPage(from, size, "id", Sort.Direction.ASC);
         List<Compilation> compilations = (pinned == null)
-                ? compilationRepository.findAll(PageRequest.of(from / size, size)).toList()
-                : compilationRepository.findAllByPinned(pinned, PageRequest.of(from / size, size));
+                ? compilationRepository.findAll(page).toList()
+                : compilationRepository.findAllByPinned(pinned, page);
         return compilations.stream()
                 .map(compilation -> CompilationMapper.toCompilationDto(
                         compilation,

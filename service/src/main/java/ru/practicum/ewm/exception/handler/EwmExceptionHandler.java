@@ -6,12 +6,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.ewm.exception.*;
 
+import java.sql.SQLException;
+
 @RestControllerAdvice
 public class EwmExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public EwmExceptionResponse handleConflictException(final ConflictException e) {
+        return new EwmExceptionResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public EwmExceptionResponse handleSQLException(final SQLException e) {
         return new EwmExceptionResponse(e.getMessage());
     }
 

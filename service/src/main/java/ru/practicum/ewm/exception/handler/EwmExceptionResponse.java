@@ -4,8 +4,8 @@ public class EwmExceptionResponse {
 
     private final String error;
 
-    public EwmExceptionResponse(String exceptionMessage) {
-        this.error = exceptionMessage;
+    public EwmExceptionResponse(String error) {
+        this.error = error;
     }
 
     public String getExceptionMessage() {

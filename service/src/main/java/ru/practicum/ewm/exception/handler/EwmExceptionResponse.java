@@ -2,13 +2,13 @@ package ru.practicum.ewm.exception.handler;
 
 public class EwmExceptionResponse {
 
-    private final String exceptionMessage;
+    private final String error;
 
     public EwmExceptionResponse(String exceptionMessage) {
-        this.exceptionMessage = exceptionMessage;
+        this.error = exceptionMessage;
     }
 
     public String getExceptionMessage() {
-        return exceptionMessage;
+        return error;
     }
 }

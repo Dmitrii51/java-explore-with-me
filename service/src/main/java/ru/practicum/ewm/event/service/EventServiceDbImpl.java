@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.event.category.service.CategoryService;
 import ru.practicum.ewm.event.controller.client.SortOption;
 import ru.practicum.ewm.event.dto.*;
@@ -33,8 +34,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 @Slf4j
+@Service
+@Transactional(readOnly = true)
 public class EventServiceDbImpl implements EventService {
 
     private final Gson gsonForClient;
@@ -75,7 +77,7 @@ public class EventServiceDbImpl implements EventService {
 
         Pageable page = PageBuilder.getPage(from, size, "eventDate", Sort.Direction.ASC);
 
-        List<Event> events = eventRepository.getPublishedEvents(
+        List<Event> events = eventRepository.findPublishedEvents(
                 text != null ? text.toLowerCase() : null,
                 categories, paid, rangeStart, rangeEnd, page);
 
@@ -118,6 +120,7 @@ public class EventServiceDbImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto updateEvent(Integer userId, EventUpdateDto eventUpdate) {
         Event event = getEventById(eventUpdate.getEventId());
         validateEventBeforeUpdate(userId, event.getId(), event);
@@ -175,6 +178,7 @@ public class EventServiceDbImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto addEvent(Integer userId, EventNewDto eventNew) {
         validateEventDate(eventNew.getEventDate());
         Location location = locationRepository.getByLatitudeAndLongitude(
@@ -195,6 +199,7 @@ public class EventServiceDbImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto cancelEvent(Integer userId, Integer eventId) {
         Event event = getEventById(eventId);
         validateEventBeforeUserRejection(userId, eventId, event);
@@ -232,7 +237,7 @@ public class EventServiceDbImpl implements EventService {
 
         Pageable page = PageBuilder.getPage(from, size, "id", Sort.Direction.ASC);
 
-        List<Event> events = eventRepository.getEventsByAdmin(
+        List<Event> events = eventRepository.findEventsByAdmin(
                 userIds, states, categoryIds,
                 rangeStart, rangeEnd, page);
 
@@ -243,6 +248,7 @@ public class EventServiceDbImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto updateEventByAdmin(Integer eventId, EventUpdateAdminDto eventUpdate) {
         Event event = getEventById(eventId);
         updateEventDataByAdmin(eventUpdate, event);
@@ -296,6 +302,7 @@ public class EventServiceDbImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto publishEventByAdmin(Integer eventId) {
         Event event = getEventById(eventId);
         validateEventBeforePublishing(event);
@@ -316,6 +323,7 @@ public class EventServiceDbImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDto cancelEventByAdmin(Integer eventId) {
         Event event = getEventById(eventId);
         validateEventStatus(event);

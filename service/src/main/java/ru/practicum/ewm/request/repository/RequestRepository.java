@@ -14,7 +14,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
     @Query(value = "SELECT r FROM Request r " +
             "WHERE r.event.initiator.id = ?1 " +
             "AND r.event.id = ?2")
-    List<Request> getUserEventRequests(Integer initiatorId, Integer eventId);
+    List<Request> findUserEventRequests(Integer initiatorId, Integer eventId);
 
     @Modifying
     @Transactional
@@ -34,21 +34,21 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
     @Query(value = "SELECT r FROM Request r " +
             "WHERE r.requester.id = ?1 " +
             "AND r.id = ?2")
-    Optional<Request> getUserRequestById(Integer requesterId, Integer requestId);
+    Optional<Request> findUserRequestById(Integer requesterId, Integer requestId);
 
     @Query("SELECT count(r) FROM Request r " +
             "WHERE r.event.id = ?1 " +
             "AND r.status = 'CONFIRMED'")
-    Integer getConfirmedRequests(Integer eventId);
+    Integer findConfirmedRequests(Integer eventId);
 
     @Query(value = "SELECT r FROM Request r " +
             "WHERE r.requester.id = ?1 " +
             "AND r.event.id = ?2")
-    Optional<Request> getUserRequest(Integer requesterId, Integer eventId);
+    Optional<Request> findUserRequest(Integer requesterId, Integer eventId);
 
     @Query(value = "SELECT r FROM Request r " +
             "WHERE r.event.initiator.id = ?1 " +
             "AND r.event.id = ?2 " +
             "AND r.id = ?3")
-    Optional<Request> getUserRequest(Integer initiatorId, Integer eventId, Integer requestId);
+    Optional<Request> findUserRequest(Integer initiatorId, Integer eventId, Integer requestId);
 }

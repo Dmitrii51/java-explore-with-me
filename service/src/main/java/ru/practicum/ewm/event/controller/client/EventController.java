@@ -1,6 +1,7 @@
 package ru.practicum.ewm.event.controller.client;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @Validated
@@ -39,6 +41,8 @@ public class EventController {
             @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
             @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size,
             HttpServletRequest request) {
+        log.info("{}: запрос к эндпоинту {} на получение событий с возможностью фильтрации",
+                request.getRemoteAddr(), request.getRequestURI());
         return eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable,
                 sort, from, size, request.getRemoteAddr(), request.getRequestURI());
     }
@@ -47,6 +51,8 @@ public class EventController {
     EventDto getEventById(
             @PathVariable(name = "id") @Min(0) Integer eventId,
             HttpServletRequest request) {
+        log.info("{}: запрос к эндпоинту {} на получение информации о событии с id {}",
+                request.getRemoteAddr(), request.getRequestURI(), eventId);
         return eventService.getEventById(eventId, request.getRemoteAddr(), request.getRequestURI());
     }
 
@@ -54,35 +60,50 @@ public class EventController {
     List<EventShortDto> getUserEvents(
             @PathVariable @Min(0) Integer userId,
             @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
-            @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
+            @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size,
+            HttpServletRequest request) {
+        log.info("{}: запрос к эндпоинту {} на получение событий, добавленных пользователем с id {}",
+                request.getRemoteAddr(), request.getRequestURI(), userId);
         return eventService.getUserEvents(userId, from, size);
     }
 
     @PatchMapping("/users/{userId}/events")
     EventDto updateEvent(
             @RequestBody @Valid EventUpdateDto eventUpdate,
-            @PathVariable @Min(0) Integer userId) {
+            @PathVariable @Min(0) Integer userId,
+            HttpServletRequest request) {
+        log.info("{}: запрос к эндпоинту {} на изменение события c id = {}, добавленного пользователем с id {}",
+                request.getRemoteAddr(), request.getRequestURI(), eventUpdate.getEventId(), userId);
         return eventService.updateEvent(userId, eventUpdate);
     }
 
     @PostMapping("/users/{userId}/events")
     EventDto addEvent(
             @RequestBody @Valid EventNewDto eventNew,
-            @PathVariable @Min(0) Integer userId) {
+            @PathVariable @Min(0) Integer userId,
+            HttpServletRequest request) {
+        log.info("{}: запрос к эндпоинту {} на добавление нового события пользователем с id {}",
+                request.getRemoteAddr(), request.getRequestURI(), userId);
         return eventService.addEvent(userId, eventNew);
     }
 
     @GetMapping("/users/{userId}/events/{eventId}")
     EventDto getUserEvent(
             @PathVariable @Min(0) Integer userId,
-            @PathVariable @Min(0) Integer eventId) {
+            @PathVariable @Min(0) Integer eventId,
+            HttpServletRequest request) {
+        log.info("{}: запрос к эндпоинту {} на получение информации о событии с id {} пользователем с id {}",
+                request.getRemoteAddr(), request.getRequestURI(), eventId, userId);
         return eventService.getUserEvent(userId, eventId);
     }
 
     @PatchMapping("/users/{userId}/events/{eventId}")
     EventDto cancelEvent(
             @PathVariable @Min(1) Integer userId,
-            @PathVariable @Min(1) Integer eventId) {
+            @PathVariable @Min(1) Integer eventId,
+            HttpServletRequest request) {
+        log.info("{}: запрос к эндпоинту {} на отмену события с id {} пользователем с id {}",
+                request.getRemoteAddr(), request.getRequestURI(), eventId, userId);
         return eventService.cancelEvent(userId, eventId);
     }
 }

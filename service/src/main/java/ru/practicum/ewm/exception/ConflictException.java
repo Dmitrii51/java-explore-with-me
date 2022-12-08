@@ -1,11 +1,11 @@
 package ru.practicum.ewm.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import lombok.extern.slf4j.Slf4j;
 
-@ResponseStatus(HttpStatus.CONFLICT)
+@Slf4j
 public class ConflictException extends RuntimeException {
     public ConflictException(final String message) {
         super(message);
+        log.error(message);
     }
 }

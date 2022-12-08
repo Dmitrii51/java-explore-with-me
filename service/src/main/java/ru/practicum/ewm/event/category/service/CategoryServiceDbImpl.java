@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.event.category.dto.CategoryDto;
 import ru.practicum.ewm.event.category.dto.CategoryMapper;
 import ru.practicum.ewm.event.category.dto.NewCategoryDto;
@@ -19,9 +20,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
 @Slf4j
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class CategoryServiceDbImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -45,13 +47,13 @@ public class CategoryServiceDbImpl implements CategoryService {
     public Category getCategoryById(Integer catId) {
         Optional<Category> category = categoryRepository.findById(catId);
         if (category.isEmpty()) {
-            log.warn("Попытка изменения информации о несуществующей категории с id - {}", catId);
             throw new ResourceNotFoundException(String.format("Категории с id = %s не существует", catId));
         }
         return category.get();
     }
 
     @Override
+    @Transactional
     public CategoryDto updateCategory(CategoryDto categoryDto) {
         try {
             getCategoryById(categoryDto.getId());
@@ -64,6 +66,7 @@ public class CategoryServiceDbImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto addCategory(NewCategoryDto newCategoryDto) {
         try {
             Category newCategory = categoryRepository.save(CategoryMapper.fromNewCategoryDto(newCategoryDto));
@@ -75,6 +78,7 @@ public class CategoryServiceDbImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(Integer catId) {
         getCategoryById(catId);
         categoryRepository.deleteById(catId);

@@ -1,11 +1,11 @@
 package ru.practicum.ewm.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import lombok.extern.slf4j.Slf4j;
 
-@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+@Slf4j
 public class RemoteServerException extends RuntimeException {
     public RemoteServerException(final String message) {
         super(message);
+        log.error(message);
     }
 }

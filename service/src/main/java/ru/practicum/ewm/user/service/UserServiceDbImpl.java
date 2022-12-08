@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.ResourceNotFoundException;
 import ru.practicum.ewm.user.dto.UserDto;
@@ -18,9 +19,10 @@ import ru.practicum.ewm.util.PageBuilder;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
 @Slf4j
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class UserServiceDbImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -34,6 +36,7 @@ public class UserServiceDbImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto addUser(UserNewDto userNewDto) {
         try {
             User newUser = userRepository.save(UserMapper.fromUserNewDto(userNewDto));
@@ -45,9 +48,9 @@ public class UserServiceDbImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Integer userId) {
         if (userRepository.findById(userId).isEmpty()) {
-            log.warn("Попытка удаления несуществующего пользователя с id - {}", userId);
             throw new ResourceNotFoundException(String.format("Пользователя с id = %s не существует", userId));
         }
         userRepository.deleteById(userId);

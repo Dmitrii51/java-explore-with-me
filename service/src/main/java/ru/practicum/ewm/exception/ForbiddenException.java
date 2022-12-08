@@ -1,11 +1,11 @@
 package ru.practicum.ewm.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import lombok.extern.slf4j.Slf4j;
 
-@ResponseStatus(HttpStatus.FORBIDDEN)
+@Slf4j
 public class ForbiddenException extends RuntimeException {
     public ForbiddenException(final String message) {
         super(message);
+        log.error(message);
     }
 }

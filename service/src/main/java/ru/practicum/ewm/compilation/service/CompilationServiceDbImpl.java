@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.compilation.dto.CompilationDto;
 import ru.practicum.ewm.compilation.dto.CompilationMapper;
 import ru.practicum.ewm.compilation.dto.CompilationNewDto;
@@ -22,8 +23,9 @@ import ru.practicum.ewm.util.PageBuilder;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 @Slf4j
+@Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CompilationServiceDbImpl implements CompilationService {
 
@@ -55,6 +57,7 @@ public class CompilationServiceDbImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public CompilationDto addCompilation(CompilationNewDto compilationDto) {
         List<Event> events = eventRepository.findAllById(compilationDto.getEvents());
         Compilation compilation = compilationRepository.save(
@@ -75,12 +78,14 @@ public class CompilationServiceDbImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void deleteCompilation(Integer compId) {
         compilationRepository.deleteById(compId);
         log.info("Удаление подборки событий c id = {}", compId);
     }
 
     @Override
+    @Transactional
     public void deleteCompilationEvent(Integer compId, Integer eventId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Подборки событий с id = %s не существует", compId)));
@@ -90,6 +95,7 @@ public class CompilationServiceDbImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void addCompilationEvent(Integer compId, Integer eventId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Подборки событий с id = %s не существует", compId)));
@@ -99,18 +105,18 @@ public class CompilationServiceDbImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void unpinCompilation(Integer compId) {
         if (compilationRepository.pinUnpinCompilation(compId, false) != 1) {
-            log.warn("Попытка открепления несуществующей подборки c id = {} с главной страницы", compId);
             throw new ResourceNotFoundException(String.format("Подборки событий с id = %s не существует", compId));
         }
         log.info("Открепление подборки c id {} с главной страницы", compId);
     }
 
     @Override
+    @Transactional
     public void pinCompilation(Integer compId) {
         if (compilationRepository.pinUnpinCompilation(compId, true) != 1) {
-            log.warn("Попытка закрепления несуществующей подборки c id = {} на главной странице", compId);
             throw new ResourceNotFoundException(String.format("Подборки событий с id = %s не существует", compId));
         }
         log.info("Закрепление подборки c id = {} на главной странице", compId);

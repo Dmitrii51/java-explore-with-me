@@ -33,9 +33,9 @@ create TABLE IF NOT EXISTS events (
     request_moderation boolean NOT NULL,
     state varchar(50) NOT NULL,
     title varchar(100) NOT NULL,
-    category_id bigint REFERENCES categories (category_id),
+    category_id bigint REFERENCES categories (category_id) ON DELETE RESTRICT,
     initiator_id bigint REFERENCES users (user_id) ON DELETE CASCADE,
-    location_id bigint REFERENCES locations (location_id) ON DELETE CASCADE,
+    location_id bigint REFERENCES locations (location_id) ON DELETE RESTRICT,
     CONSTRAINT pk_event PRIMARY KEY (event_id)
 );
 

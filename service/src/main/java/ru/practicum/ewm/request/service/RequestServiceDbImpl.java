@@ -3,6 +3,7 @@ package ru.practicum.ewm.request.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.EventState;
 import ru.practicum.ewm.event.service.EventService;
@@ -20,9 +21,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
 @Slf4j
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class RequestServiceDbImpl implements RequestService {
 
     private final RequestRepository requestRepository;
@@ -33,13 +35,14 @@ public class RequestServiceDbImpl implements RequestService {
 
     @Override
     public List<RequestDto> getUserEventRequests(Integer userId, Integer eventId) {
-        List<Request> requests = requestRepository.getUserEventRequests(userId, eventId);
+        List<Request> requests = requestRepository.findUserEventRequests(userId, eventId);
         return requests.stream().map(RequestMapper::toRequestDto).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public RequestDto confirmRequest(Integer userId, Integer eventId, Integer reqId) {
-        Request request = requestRepository.getUserRequest(userId, eventId, reqId)
+        Request request = requestRepository.findUserRequest(userId, eventId, reqId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
                         "Запроса с id = %s не существует", reqId)));
         Event event = request.getEvent();
@@ -66,8 +69,9 @@ public class RequestServiceDbImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public RequestDto rejectRequest(Integer userId, Integer eventId, Integer reqId) {
-        Request request = requestRepository.getUserRequest(userId, eventId, reqId)
+        Request request = requestRepository.findUserRequest(userId, eventId, reqId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Запроса с id = %s не существует", reqId)));
         request.setStatus(RequestStatus.REJECTED);
@@ -82,6 +86,7 @@ public class RequestServiceDbImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public RequestDto addRequest(Integer userId, Integer eventId) {
         Event event = eventService.getEventById(eventId);
         validateNewRequest(userId, eventId, event);
@@ -99,7 +104,7 @@ public class RequestServiceDbImpl implements RequestService {
 
     private void validateNewRequest(Integer userId, Integer eventId, Event event) {
 
-        if (requestRepository.getUserRequest(userId, eventId).isPresent()) {
+        if (requestRepository.findUserRequest(userId, eventId).isPresent()) {
             throw new ForbiddenException("Нельзя добавлять повторный запрос");
         }
 
@@ -118,8 +123,9 @@ public class RequestServiceDbImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public RequestDto cancelRequest(Integer userId, Integer requestId) {
-        Request request = requestRepository.getUserRequestById(userId, requestId)
+        Request request = requestRepository.findUserRequestById(userId, requestId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Запроса с id = %s не существует", requestId)));
         request.setStatus(RequestStatus.CANCELED);
@@ -129,6 +135,6 @@ public class RequestServiceDbImpl implements RequestService {
 
     @Override
     public Integer getConfirmedRequests(Integer eventId) {
-        return requestRepository.getConfirmedRequests(eventId);
+        return requestRepository.findConfirmedRequests(eventId);
     }
 }

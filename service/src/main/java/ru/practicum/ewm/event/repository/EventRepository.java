@@ -19,7 +19,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "AND (COALESCE(:states, null) IS NULL OR e.state IN :states) " +
             "AND (COALESCE(:categoryIds, null) IS NULL OR e.category.id IN :categoryIds) " +
             "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd")
-    List<Event> getEventsByAdmin(
+    List<Event> findEventsByAdmin(
             @Param("userIds") List<Integer> userIds, @Param("states") List<EventState> states,
             @Param("categoryIds") List<Integer> categoryIds,
             @Param("rangeStart") LocalDateTime rangeStart,
@@ -33,7 +33,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "AND (coalesce(:paid, null) IS NULL OR e.paid = :paid) " +
             "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd " +
             "AND e.state = 'PUBLISHED'")
-    List<Event> getPublishedEvents(
+    List<Event> findPublishedEvents(
             @Param("text") String text, @Param("categories") List<Integer> categories,
             @Param("paid") Boolean paid, @Param("rangeStart") LocalDateTime rangeStart,
             @Param("rangeEnd") LocalDateTime rangeEnd, Pageable page);

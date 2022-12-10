@@ -42,7 +42,7 @@ public class EventAdminController {
     }
 
     @PutMapping("/events/{eventId}")
-    EventDto updateEventByAdmin(
+    EventDto updateCommentStatusByAdmin(
             @RequestBody EventUpdateAdminDto eventUpdate,
             @PathVariable Integer eventId,
             HttpServletRequest request) {

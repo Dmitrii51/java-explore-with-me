@@ -43,14 +43,15 @@ public class CommentMapper {
         );
     }
 
-    public Comment fromCommentUpdateDto(CommentUpdateDto commentUpdateDto, Event event, User author) {
+    public Comment fromCommentUpdateDto(CommentUpdateDto commentUpdateDto, Event event,
+                                        User author, CommentStatus status) {
         return new Comment(
             commentUpdateDto.getCommentId(),
             commentUpdateDto.getText(),
             event,
             author,
             LocalDateTime.now(),
-            CommentStatus.EDITED
+            status
         );
     }
 

@@ -87,7 +87,7 @@ public class CommentServiceImpl implements CommentService {
         User author =  comment.getAuthor();
         validateCommentAuthor(author, userId, comment.getId());
         Comment updatedComment = commentRepository.save(CommentMapper.fromCommentUpdateDto(
-                commentUpdateDto, comment.getEvent(), author));
+                commentUpdateDto, comment.getEvent(), author, checkCommentStatus(comment)));
         log.info("Изменение комментария c id {}", comment.getId());
         return CommentMapper.toCommentDto(updatedComment);
     }
@@ -97,6 +97,13 @@ public class CommentServiceImpl implements CommentService {
                 || comment.getStatus().equals(CommentStatus.HIDDEN)) {
             throw new ForbiddenException("Нельзя изменять комментарий, который был отклонен или скрыт модератором");
         }
+    }
+
+    private CommentStatus checkCommentStatus(Comment comment) {
+        if (comment.getStatus().equals(CommentStatus.APPROVED)) {
+            return CommentStatus.EDITED;
+        }
+        return comment.getStatus();
     }
 
     private void validateCommentAuthor(User author, Integer userId, Integer commentId) {

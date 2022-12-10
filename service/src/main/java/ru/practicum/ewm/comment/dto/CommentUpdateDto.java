@@ -21,5 +21,4 @@ public class CommentUpdateDto {
     @Size(min = Constants.MIN_COMMENT_LENGTH, max = Constants.MAX_COMMENT_LENGTH,
             message = "Неверное количество символов в комментарии")
     private String text;
-
 }

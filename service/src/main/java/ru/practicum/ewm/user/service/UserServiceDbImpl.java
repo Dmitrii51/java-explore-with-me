@@ -16,7 +16,6 @@ import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
 import ru.practicum.ewm.util.PageBuilder;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 

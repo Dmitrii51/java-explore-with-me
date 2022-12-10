@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.ewm.event.category.dto.CategoryDto;
 import ru.practicum.ewm.event.location.dto.LocationDto;
 import ru.practicum.ewm.event.model.EventState;
 import ru.practicum.ewm.user.dto.UserShortDto;

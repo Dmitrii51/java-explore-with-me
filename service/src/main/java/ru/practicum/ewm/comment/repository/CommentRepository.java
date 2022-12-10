@@ -1,5 +1,6 @@
 package ru.practicum.ewm.comment.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -7,7 +8,6 @@ import ru.practicum.ewm.comment.model.Comment;
 import ru.practicum.ewm.comment.model.CommentStatus;
 
 import javax.transaction.Transactional;
-import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
@@ -27,4 +27,8 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
             "WHERE c.event.id = ?1 " +
             "AND c.status NOT IN ?2")
     List<Comment> findEventComments(Integer eventId, List<CommentStatus> forbiddenStatusForSearch, Pageable page);
+
+    List<Comment> findAllByAuthorId(Integer userId, Pageable page);
+
+    List<Comment> findAllByEventId(Integer eventId, Pageable page);
 }

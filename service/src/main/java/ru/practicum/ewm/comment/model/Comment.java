@@ -33,6 +33,8 @@ public class Comment {
 
     private LocalDateTime created;
 
+    private LocalDateTime edited;
+
     @Enumerated(EnumType.STRING)
     private CommentStatus status;
 }

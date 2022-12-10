@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.comment.dto.CommentDto;
 import ru.practicum.ewm.comment.dto.CommentDtoShort;
 import ru.practicum.ewm.comment.dto.CommentNewDto;
 import ru.practicum.ewm.comment.dto.CommentUpdateDto;
@@ -26,7 +25,7 @@ public class CommentUserController {
     private final CommentService commentService;
 
     @PostMapping
-    CommentDto addComment(
+    CommentDtoShort addComment(
             @RequestBody @Valid CommentNewDto commentNewDto,
             @PathVariable @Min(0) Integer userId,
             HttpServletRequest request) {
@@ -36,7 +35,7 @@ public class CommentUserController {
     }
 
     @PatchMapping
-    CommentDto updateComment(
+    CommentDtoShort updateComment(
             @RequestBody @Valid CommentUpdateDto commentUpdateDto,
             @PathVariable @Min(0) Integer userId,
             HttpServletRequest request) {
@@ -56,7 +55,7 @@ public class CommentUserController {
     }
 
     @GetMapping("/{commentId}")
-    CommentDto getUserComment(
+    CommentDtoShort getUserComment(
             @PathVariable @Min(0) Integer userId,
             @PathVariable @Min(0) Integer commentId,
             HttpServletRequest request) {

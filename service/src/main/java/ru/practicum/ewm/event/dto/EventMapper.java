@@ -64,4 +64,20 @@ public class EventMapper {
                 category
         );
     }
+
+    public EventDtoForComment toEventDtoForComment(Event event) {
+        return new EventDtoForComment(
+                event.getId(),
+                event.getTitle(),
+                event.getAnnotation(),
+                event.getCreated(),
+                event.getDescription(),
+                event.getEventDate(),
+                UserMapper.toUserDtoShort(event.getInitiator()),
+                LocationMapper.toLocationDto(event.getLocation()),
+                event.getPaid(),
+                event.getParticipantLimit(),
+                event.getPublished(),
+                event.getState());
+    }
 }

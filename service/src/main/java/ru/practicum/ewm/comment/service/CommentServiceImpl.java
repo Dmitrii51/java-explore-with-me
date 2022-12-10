@@ -29,9 +29,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    CommentRepository commentRepository;
-    EventService eventService;
-    UserService userService;
+    private final CommentRepository commentRepository;
+    private final UserService userService;
+    private final EventService eventService;
 
     private Comment getCommentById(Integer commentId) {
         return commentRepository.findById(commentId)
@@ -48,10 +48,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto getUserComment(Integer userId, Integer commentId) {
+    public CommentDtoShort getUserComment(Integer userId, Integer commentId) {
         Comment comment = getCommentById(commentId);
         validateCommentAuthor(comment.getAuthor(), userId, commentId);
-        return CommentMapper.toCommentDto(comment);
+        return CommentMapper.toCommentDtoShort(comment);
     }
 
     @Override
@@ -64,16 +64,16 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentDto addComment(CommentNewDto commentNewDto, Integer userId) {
+    public CommentDtoShort addComment(CommentNewDto commentNewDto, Integer userId) {
         Event event = eventService.getEventById(commentNewDto.getEventId());
         validateEventStatusForComment(event);
         Comment comment = commentRepository.save(CommentMapper.fromCommentNewDto(
                 commentNewDto, event, userService.getUserById(userId)));
         log.info("Добавление нового комментария c id {}", event.getId());
-        return CommentMapper.toCommentDto(comment);
+        return CommentMapper.toCommentDtoShort(comment);
     }
 
-    private void  validateEventStatusForComment(Event event) {
+    private void validateEventStatusForComment(Event event) {
         if (!event.getState().equals(EventState.PUBLISHED)) {
             throw new ForbiddenException("Добавлять комментарии можно только к опубликованным событиям");
         }
@@ -81,29 +81,21 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentDto updateComment(CommentUpdateDto commentUpdateDto, Integer userId) {
+    public CommentDtoShort updateComment(CommentUpdateDto commentUpdateDto, Integer userId) {
         Comment comment = getCommentById(commentUpdateDto.getCommentId());
         validateCommentStatusBeforeUpdate(comment);
-        User author =  comment.getAuthor();
+        User author = comment.getAuthor();
         validateCommentAuthor(author, userId, comment.getId());
         Comment updatedComment = commentRepository.save(CommentMapper.fromCommentUpdateDto(
-                commentUpdateDto, comment.getEvent(), author, checkCommentStatus(comment)));
+                commentUpdateDto, comment.getEvent(), author, CommentStatus.PENDING, comment.getCreated()));
         log.info("Изменение комментария c id {}", comment.getId());
-        return CommentMapper.toCommentDto(updatedComment);
+        return CommentMapper.toCommentDtoShort(updatedComment);
     }
 
     private void validateCommentStatusBeforeUpdate(Comment comment) {
-        if (comment.getStatus().equals(CommentStatus.REJECTED)
-                || comment.getStatus().equals(CommentStatus.HIDDEN)) {
-            throw new ForbiddenException("Нельзя изменять комментарий, который был отклонен или скрыт модератором");
+        if (comment.getStatus().equals(CommentStatus.REJECTED)) {
+            throw new ForbiddenException("Нельзя изменять комментарий, который был отклонен модератором");
         }
-    }
-
-    private CommentStatus checkCommentStatus(Comment comment) {
-        if (comment.getStatus().equals(CommentStatus.APPROVED)) {
-            return CommentStatus.EDITED;
-        }
-        return comment.getStatus();
     }
 
     private void validateCommentAuthor(User author, Integer userId, Integer commentId) {
@@ -125,11 +117,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentDto verifyCommentByAdmin(Integer commentId, CommentStatus status) {
+    public CommentDtoFull verifyCommentByAdmin(Integer commentId, CommentStatus status) {
         Comment comment = getCommentById(commentId);
         commentRepository.updateCommentStatus(commentId, status);
         comment.setStatus(status);
-        return CommentMapper.toCommentDto(comment);
+        return CommentMapper.toCommentFullDto(comment);
     }
 
     @Override
@@ -138,5 +130,19 @@ public class CommentServiceImpl implements CommentService {
         getCommentById(commentId);
         commentRepository.deleteById(commentId);
         log.info("Удаление комментария с id {} администраторм", commentId);
+    }
+
+    public List<CommentDtoFull> getAuthorCommentsByAdmin(Integer authorId, Integer from, Integer size) {
+        Pageable page = PageBuilder.getPage(from, size, "created", Sort.Direction.ASC);
+        return commentRepository.findAllByAuthorId(authorId, page).stream()
+                .map(CommentMapper::toCommentFullDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<CommentDtoFull> getEventCommentsByAdmin(Integer eventId, Integer from, Integer size) {
+        Pageable page = PageBuilder.getPage(from, size, "created", Sort.Direction.ASC);
+        return commentRepository.findAllByAuthorId(eventId, page).stream()
+                .map(CommentMapper::toCommentFullDto)
+                .collect(Collectors.toList());
     }
 }

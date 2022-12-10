@@ -45,6 +45,7 @@ create TABLE IF NOT EXISTS comments (
     event_id bigint REFERENCES events (event_id) ON DELETE CASCADE,
     author_id bigint REFERENCES users (user_id) ON DELETE CASCADE,
     created timestamp without time zone NOT NULL,
+    edited timestamp without time zone,
     status varchar(50) NOT NULL
 );
 

@@ -12,7 +12,10 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
-    List<Comment> findAllByAuthorIdOrderByCreated(Integer authorId, Pageable page);
+    @Query(value = "SELECT c FROM Comment c " +
+            "WHERE c.author.id = ?1 " +
+            "AND c.status != ?2")
+    List<Comment> findAllByAuthorId(Integer authorId, CommentStatus status, Pageable page);
 
     @Modifying
     @Transactional

@@ -45,6 +45,16 @@ public class CommentUserController {
         return commentService.updateComment(commentUpdateDto, userId);
     }
 
+    @DeleteMapping("/{commentId}")
+    void deleteCommentByUser(
+            @PathVariable @Min(0) Integer commentId,
+            @PathVariable @Min(0) Integer userId,
+            HttpServletRequest request) {
+        log.info("{}: запрос к эндпоинту {} на удаление комментария с id {} пользователем с id {}",
+                request.getRemoteAddr(), request.getRequestURI(), commentId, userId);
+        commentService.deleteCommentByUser(commentId, userId);
+    }
+
     @GetMapping("/{commentId}")
     CommentDto getUserComment(
             @PathVariable @Min(0) Integer userId,

@@ -18,6 +18,8 @@ public interface CommentService {
 
     CommentDto updateComment(CommentUpdateDto commentUpdateDto, Integer userId);
 
+    void deleteCommentByUser(Integer commentId, Integer userId);
+
     CommentDto getUserComment(Integer userId, Integer commentId);
 
     List<CommentDtoShort> getUserComments(Integer userId, Integer from, Integer size);

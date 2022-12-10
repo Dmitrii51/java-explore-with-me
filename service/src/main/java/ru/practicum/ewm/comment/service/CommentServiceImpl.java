@@ -57,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentDtoShort> getUserComments(Integer userId, Integer from, Integer size) {
         Pageable page = PageBuilder.getPage(from, size, "created", Sort.Direction.ASC);
-        return commentRepository.findAllByAuthorIdOrderByCreated(userId, page).stream()
+        return commentRepository.findAllByAuthorId(userId, CommentStatus.REJECTED, page).stream()
                 .map(CommentMapper::toCommentDtoShort)
                 .collect(Collectors.toList());
     }
@@ -105,6 +105,15 @@ public class CommentServiceImpl implements CommentService {
                     String.format("Пользователь с id = %s не является автором комментария с id = %s",
                             userId, commentId));
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteCommentByUser(Integer commentId, Integer userId) {
+        Comment comment = getCommentById(commentId);
+        validateCommentAuthor(comment.getAuthor(), userId, commentId);
+        commentRepository.deleteById(commentId);
+        log.info("Удаление комментария с id {} пользователем с id {}", commentId, userId);
     }
 
     @Override

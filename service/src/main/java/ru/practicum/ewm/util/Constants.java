@@ -11,11 +11,11 @@ public class Constants {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
 
-    public final static int MIN_COMMENT_LENGTH = 10;
+    public static final int MIN_COMMENT_LENGTH = 10;
 
-    public final static int MAX_COMMENT_LENGTH = 3000;
+    public static final int MAX_COMMENT_LENGTH = 3000;
 
-    public final static List<CommentStatus> forbiddenStatusForSearch = List.of(
+    public static final List<CommentStatus> forbiddenStatusForSearch = List.of(
             CommentStatus.PENDING,
             CommentStatus.REJECTED,
             CommentStatus.HIDDEN);

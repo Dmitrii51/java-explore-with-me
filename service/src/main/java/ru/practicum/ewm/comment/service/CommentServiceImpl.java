@@ -141,7 +141,7 @@ public class CommentServiceImpl implements CommentService {
 
     public List<CommentDtoFull> getEventCommentsByAdmin(Integer eventId, Integer from, Integer size) {
         Pageable page = PageBuilder.getPage(from, size, "created", Sort.Direction.ASC);
-        return commentRepository.findAllByAuthorId(eventId, page).stream()
+        return commentRepository.findAllByEventId(eventId, page).stream()
                 .map(CommentMapper::toCommentFullDto)
                 .collect(Collectors.toList());
     }
